@@ -1,0 +1,44 @@
+workflows:
+  unity-build:
+    name: Unity Build - PenguinFisherman
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    environment:
+      unity: 6000.0.63f1
+      vars:
+        BUILD_PLATFORM: android
+      groups:
+        - unity_credentials 
+    scripts:
+      - name: Activate Unity license
+        script: |
+          echo "Activating Unity license..."
+          "$UNITY_HOME/Contents/MacOS/Unity" -batchmode \
+            -quit \
+            -logFile unity_license.log \
+            -serial "SC-594J-K5BV-UCV7-J8S5-SMYH" \
+            -username "monkeydluffy0102@mail.ru" \
+            -password "Subhanalloh33"
+      - name: Build the project
+        script: |
+          echo "Building Unity project..."
+          "$UNITY_HOME/Contents/MacOS/Unity" -batchmode \
+            -quit \
+            -logFile unity_build.log \
+            -projectPath . \
+            -executeMethod BuildScript.PerformBuild \
+            -nographics
+
+      - name: Return (deactivate) Unity license
+        script: |
+          echo "Returning Unity license..."
+          "$UNITY_HOME/Contents/MacOS/Unity" \
+          -batchmode -quit -returnLicense || true
+
+
+    artifacts:
+      - FastChickenEscape.aab
+      - FastChickenEscape.apk
+      - unity_build.log
+      - unity_license.log
+      - unity_return_license.log  # Добавил лог деактивации для отладки
