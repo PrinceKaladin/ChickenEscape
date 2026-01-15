@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public delegate void _delegate();
     public _delegate OnGameStarted, OnGameOver, OnGamePaused;
     public CinemachineCameraOffset CameraOffset;
-
+    public Text megatext;
     /// <summary>
     /// Awake is called when the script instance is being loaded.
     /// </summary>
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     {
         if (run)
         {
-    
+            scoretext.gameObject.SetActive(true);
             scoree+=Time.deltaTime;
             scoretext.text = "Score: " + ((int)scoree).ToString();
             if (PlayerPrefs.GetInt("bestscore", 1) < scoree)
@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     {
         if(OnGameOver != null)
         {
+            scoretext.gameObject.SetActive(false);
+            megatext.text = scoretext.text;
             run = false;
             OnGameOver();
 
@@ -70,6 +72,11 @@ public class GameManager : MonoBehaviour
    
 
         IEnumerator yi() {
-        yield return new WaitForSeconds(0.5f); CameraOffset.enabled = true;
+        while (CameraOffset.m_Offset.x >= -2)
+        {
+            yield return new WaitForSeconds(0.01f);
+            CameraOffset.m_Offset.x -= 0.02f;
+            
+        }
     }
 }
