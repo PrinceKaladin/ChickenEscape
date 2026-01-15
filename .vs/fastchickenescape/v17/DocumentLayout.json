@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|c:\\users\\monke\\onedrive\\\u0440\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\assets\\runner template\\scripts\\controllers\\char_controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|solutionrelative:assets\\runner template\\scripts\\controllers\\char_controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|c:\\users\\monke\\onedrive\\\u0440\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\assets\\runner template\\scripts\\misc\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|solutionrelative:assets\\runner template\\scripts\\misc\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|c:\\users\\monke\\onedrive\\\u0440\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\assets\\runner template\\scripts\\audiosourcex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1E835DDE-136B-CFDB-826B-D0B5EC1A484D}|Assembly-CSharp.csproj|solutionrelative:assets\\runner template\\scripts\\audiosourcex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "sensor.cs",
+              "DocumentMoniker": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\Misc\\sensor.cs",
+              "RelativeDocumentMoniker": "Assets\\Runner Template\\scripts\\Misc\\sensor.cs",
+              "ToolTip": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\Misc\\sensor.cs",
+              "RelativeToolTip": "Assets\\Runner Template\\scripts\\Misc\\sensor.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-15T18:23:50.154Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "char_controller.cs",
+              "DocumentMoniker": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\Controllers\\char_controller.cs",
+              "RelativeDocumentMoniker": "Assets\\Runner Template\\scripts\\Controllers\\char_controller.cs",
+              "ToolTip": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\Controllers\\char_controller.cs",
+              "RelativeToolTip": "Assets\\Runner Template\\scripts\\Controllers\\char_controller.cs",
+              "ViewState": "AQIAAEwBAAAAAAAAAAAAwG8BAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-15T18:17:27.267Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "audiosourcex.cs",
+              "DocumentMoniker": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\audiosourcex.cs",
+              "RelativeDocumentMoniker": "Assets\\Runner Template\\scripts\\audiosourcex.cs",
+              "ToolTip": "C:\\Users\\monke\\OneDrive\\\u0420\u0430\u0431\u043E\u0447\u0438\u0439 \u0441\u0442\u043E\u043B\\github-games\\fastchickenescape\\Assets\\Runner Template\\scripts\\audiosourcex.cs",
+              "RelativeToolTip": "Assets\\Runner Template\\scripts\\audiosourcex.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-15T18:02:46.606Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

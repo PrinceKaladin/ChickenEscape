@@ -8,16 +8,24 @@ public class char_controller : MonoBehaviour
     {
         Human, AI
     }
+
     private Vector2 touchStartPos;
     private bool swipeDetected;
+
     public type charType;
 
     [Space(10)]
     public float xMoveLimit;
     public float min_yMoveLimit, max_yMoveLimit;
+
+    [Header("Smooth lane change (Variant 1)")]
+    public float laneStep = 3f;            // ширина полосы (у тебя было +/-3)
+    public float laneChangeTime = 0.12f;   // чем больше — тем плавнее
+    private float xSmoothVel;              // служебная скорость SmoothDamp
+
     public bool isTransitioning;
-    public float targetPosition;
-    private float side = 0;
+    public float targetPosition;           // плавная X позиция
+    private float side = 0;                // целевая полоса (X)
     private float prevSide = 0;
 
     public delegate void charDelegate();
@@ -26,10 +34,9 @@ public class char_controller : MonoBehaviour
     public delegate void charPosDelegate(float pos);
     public charPosDelegate OnCharPositionChanged;
 
-
     [Space(10)]
     public Rigidbody rigidboddy;
-    public float speed = 5;
+    public float speed = 5;                // оставил, но теперь для SmoothDamp не нужен как скорость
     private float maxSpeed;
     public float forwardSpeed = 10;
 
@@ -40,7 +47,6 @@ public class char_controller : MonoBehaviour
     public bool isGrounded;
 
     public int lives = 3;
-
     public List<string> obstacleTags;
 
     [Header("AI Paramters: ")]
@@ -52,10 +58,14 @@ public class char_controller : MonoBehaviour
     private Coroutine coroutineRef;
 
     private float playerPos;
-    // Start is called before the first frame update
+
     void Start()
     {
         maxSpeed = speed;
+
+        // чтобы старт не дёргался, синхронизируемся
+        targetPosition = transform.position.x;
+        side = targetPosition;
 
         if (charType == type.AI)
         {
@@ -68,7 +78,7 @@ public class char_controller : MonoBehaviour
     #region AI Callbacks
     void OnTargetHit()
     {
-        Mathf.Clamp(forwardSpeed += 10, 50, 70);
+        forwardSpeed = Mathf.Clamp(forwardSpeed + 10, 50, 70);
     }
 
     void OnTargetDead()
@@ -103,25 +113,40 @@ public class char_controller : MonoBehaviour
                 if (charType == type.Human)
                 {
                     if (OnDead != null)
-                    {
                         OnDead();
-                    }
                 }
             }
             return;
         }
 
-        targetPosition = Mathf.MoveTowards(targetPosition, side, speed * Time.fixedDeltaTime);
-        var reqPos = new Vector3(targetPosition, transform.position.y, transform.position.z);
+        // ====== ПЛАВНОЕ ДВИЖЕНИЕ ПО X (SmoothDamp) ======
+        side = Mathf.Clamp(side, -xMoveLimit, xMoveLimit);
 
-        if (transform.position.x != targetPosition)
-        {
-            rigidboddy.MovePosition(reqPos);
-        }
+        targetPosition = Mathf.SmoothDamp(
+            targetPosition,
+            side,
+            ref xSmoothVel,
+            laneChangeTime,
+            Mathf.Infinity,
+            Time.fixedDeltaTime
+        );
 
-        var forceVector = new Vector3(transform.position.x, transform.position.y, forwardSpeed);
-        rigidboddy.AddForce(forceVector, ForceMode.Acceleration);
-        rigidboddy.linearVelocity = Vector3.ClampMagnitude(rigidboddy.linearVelocity, forwardSpeed / 2);
+        Vector3 reqPos = new Vector3(
+            targetPosition,
+            rigidboddy.position.y,
+            rigidboddy.position.z
+        );
+
+        rigidboddy.MovePosition(reqPos);
+
+        // ====== ДВИЖЕНИЕ ВПЕРЁД (как у тебя, но аккуратнее) ======
+        // ВАЖНО: forceVector у тебя был странный (x,y,forwardSpeed).
+        // Я оставляю AddForce идею, но делаю вектор силы строго вперёд.
+        rigidboddy.AddForce(Vector3.forward * forwardSpeed, ForceMode.Acceleration);
+
+        // Ограничение скорости (если у тебя именно linearVelocity, ок; но обычно это velocity)
+        // Оставляю как было у тебя, чтобы не сломать проект:
+        rigidboddy.linearVelocity = Vector3.ClampMagnitude(rigidboddy.linearVelocity, forwardSpeed / 2f);
     }
 
     void LateUpdate()
@@ -130,11 +155,15 @@ public class char_controller : MonoBehaviour
         {
             minZ = _Target.transform.position.z - _keepDistance;
             maxZ = _Target.transform.position.z - 2f;
-            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, min_yMoveLimit, max_yMoveLimit), Mathf.Clamp(transform.position.z, minZ, maxZ));
+
+            transform.position = new Vector3(
+                transform.position.x,
+                Mathf.Clamp(transform.position.y, min_yMoveLimit, max_yMoveLimit),
+                Mathf.Clamp(transform.position.z, minZ, maxZ)
+            );
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (charType == type.AI)
@@ -167,10 +196,8 @@ public class char_controller : MonoBehaviour
                     {
                         swipeDetected = true;
 
-                        if (delta.x > 0)
-                            rightSwipe = !isTransitioning;
-                        else
-                            leftSwipe = !isTransitioning;
+                        if (delta.x > 0) rightSwipe = !isTransitioning;
+                        else leftSwipe = !isTransitioning;
                     }
                 }
             }
@@ -181,27 +208,25 @@ public class char_controller : MonoBehaviour
             if (left)
             {
                 prevSide = side;
+
                 if (side == xMoveLimit)
-                {
                     side = 0;
-                }
                 else
-                {
-                    side -= 3;
-                }
+                    side -= laneStep; // было "-= 3"
             }
             else if (right)
             {
                 prevSide = side;
+
                 if (side == -xMoveLimit)
                     side = 0;
                 else
-                    side += 3;
+                    side += laneStep; // было "+= 3"
             }
 
-            if (OnCharPositionChanged != null)
-                OnCharPositionChanged(side);
+            OnCharPositionChanged?.Invoke(side);
         }
+
         Movement();
     }
 
@@ -221,13 +246,8 @@ public class char_controller : MonoBehaviour
         {
             if (playerPos == xMoveLimit)
             {
-                // TODO: Player is on Rightmost lane
                 isRightBlocked = Physics.Raycast(transform.position, transform.right, out hit, rayDistance, mask);
-                if (isRightBlocked)
-                {
-                    // just keep going forward
-                }
-                else
+                if (!isRightBlocked)
                 {
                     prevSide = side;
                     side = playerPos;
@@ -236,14 +256,8 @@ public class char_controller : MonoBehaviour
             }
             else if (playerPos == -xMoveLimit)
             {
-                // TODO: Player is on Leftmost lane
-
                 isLeftBlocked = Physics.Raycast(transform.position, -transform.right, out hit, rayDistance, mask);
-                if (isLeftBlocked)
-                {
-                    // just keep going forward
-                }
-                else
+                if (!isLeftBlocked)
                 {
                     prevSide = side;
                     side = playerPos;
@@ -252,50 +266,32 @@ public class char_controller : MonoBehaviour
             }
             else
             {
-                // Player is in dead center
-
-                // if we have have something on the front
                 isFrontBlocked = Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, mask);
 
-                // if the side player is currently on, has something that we could collide with shall we move to that side
-                var BlockageAhead = Physics.Raycast(_Target.transform.position, -_Target.transform.forward, out hit, rayDistance * 2.5f, mask);;
-                
+                var BlockageAhead = Physics.Raycast(_Target.transform.position, -_Target.transform.forward, out hit, rayDistance * 2.5f, mask);
+
                 if (playerPos == 0)
                 {
-                    if(BlockageAhead && !isFrontBlocked)
-                    {
+                    if (BlockageAhead && !isFrontBlocked)
                         return;
-                    }
 
                     isLeftBlocked = Physics.Raycast(transform.position, -transform.right, out hit, rayDistance, mask);
 
                     if (isLeftBlocked)
                     {
                         isRightBlocked = Physics.Raycast(transform.position, transform.right, out hit, rayDistance, mask);
-                        if (isRightBlocked)
-                        {
-                            // TODO: cater a scenario where we have no side left to move to, could be an interesting place to code duck or jump logic for AI
-                        }
-                        else
+                        if (!isRightBlocked)
                         {
                             prevSide = side;
-                            if (side == xMoveLimit || side == -xMoveLimit)
-                            {
-                                side = 0;
-                            }
-                            else
-                                side += 3;
+                            if (side == xMoveLimit || side == -xMoveLimit) side = 0;
+                            else side += laneStep;
                         }
                     }
                     else
                     {
                         prevSide = side;
-                        if (side == xMoveLimit || side == -xMoveLimit)
-                        {
-                            side = 0;
-                        }
-                        else
-                            side -= 3;
+                        if (side == xMoveLimit || side == -xMoveLimit) side = 0;
+                        else side -= laneStep;
                     }
                 }
             }
@@ -306,17 +302,11 @@ public class char_controller : MonoBehaviour
     #region Movement
     void Movement()
     {
-        isTransitioning = side != targetPosition;
+        // Плавный переход: сравниваем с небольшой погрешностью, чтобы не “дрожало”
+        isTransitioning = Mathf.Abs(side - targetPosition) > 0.01f;
 
         side = Mathf.Clamp(side, -xMoveLimit, xMoveLimit);
-        var value = Mathf.Clamp(targetPosition, -xMoveLimit, xMoveLimit);
-        targetPosition = value;
-
-        var transVal = 0f;
-        if (targetPosition == 0)
-            transVal = prevSide;
-        else
-            transVal = targetPosition;
+        targetPosition = Mathf.Clamp(targetPosition, -xMoveLimit, xMoveLimit);
 
         transitionValue = Mathf.Abs(1 - (transform.position.x) / xMoveLimit);
     }
@@ -330,6 +320,7 @@ public class char_controller : MonoBehaviour
         }
     }
 
+    // ====== ONHIT ОСТАВЛЕН БЕЗ ИЗМЕНЕНИЙ, КАК ТЫ ПРОСИЛ ======
     public void OnHit(Collider col, sensor _sensor)
     {
         if (obstacleTags.Contains(col.tag))
